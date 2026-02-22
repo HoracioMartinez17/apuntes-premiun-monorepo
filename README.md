@@ -119,10 +119,10 @@ This repository contains four apps (`landing`, `api`, `content`, `admin`) plus s
 - `apps/admin` (Next.js): admin panel for notes, users, sales, and AI-assisted generation.
 - `packages/*`: shared utilities and configuration (TS, ESLint, UI).
 
-### Screenshots (App / Web)
+<!-- ### Screenshots (App / Web)
 
 ![App](apps/admin/public/next.svg)
-![Web](apps/admin/public/vercel.svg)
+![Web](apps/admin/public/vercel.svg) -->
 
 ### Tech Stack
 
