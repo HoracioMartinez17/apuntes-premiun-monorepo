@@ -1,122 +1,132 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { UsersService } from './users/users.service';
-import { UserRole } from './users/user.entity';
-import { DataSource } from 'typeorm';
-import { User } from './users/user.entity';
-import { Apunte } from './apuntes/apunte.entity';
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
+import { UsersService } from "./users/users.service";
+import { UserRole } from "./users/user.entity";
+import { DataSource } from "typeorm";
+import { User } from "./users/user.entity";
+import { Apunte } from "./apuntes/apunte.entity";
+
+function getRequiredSeedEnv(name: string): string {
+  const value = process.env[name];
+
+  if (!value || value.trim() === "") {
+    throw new Error(`Variable requerida para seed no configurada: ${name}`);
+  }
+
+  return value;
+}
 
 async function seed() {
+  const nodeEnv = process.env.NODE_ENV ?? "development";
+  const allowNonDevSeed = process.env.SEED_ALLOW_NON_DEV === "true";
+
+  if (nodeEnv !== "development" && !allowNonDevSeed) {
+    console.error("❌ Seed bloqueado fuera de development.");
+    console.error(
+      `Entorno actual: ${nodeEnv}. Si realmente lo necesitas, usa SEED_ALLOW_NON_DEV=true.`,
+    );
+    process.exit(1);
+  }
+
   const app = await NestFactory.createApplicationContext(AppModule);
   const usersService = app.get(UsersService);
   const dataSource = app.get(DataSource);
   const userRepository = dataSource.getRepository(User);
   const apunteRepository = dataSource.getRepository(Apunte);
 
-  console.log('Iniciando seed de datos...');
+  const adminEmail = process.env.SEED_ADMIN_EMAIL ?? "admin@apuntes-premium.com";
+  const adminPassword = getRequiredSeedEnv("SEED_ADMIN_PASSWORD");
+  const userEmail = process.env.SEED_USER_EMAIL ?? "usuario@test.com";
+  const userPassword = getRequiredSeedEnv("SEED_USER_PASSWORD");
+  const noAccessEmail = process.env.SEED_NO_ACCESS_EMAIL ?? "sinacceso@test.com";
+  const noAccessPassword = getRequiredSeedEnv("SEED_NO_ACCESS_PASSWORD");
+
+  console.log("Iniciando seed de datos...");
 
   try {
     // Crear usuario admin de prueba
-    const adminEmail = 'admin@apuntes-premium.com';
     let existingAdmin = await usersService.findByEmail(adminEmail);
 
     if (!existingAdmin) {
-      const admin = await usersService.create(
-        adminEmail,
-        'Admin123!',
-        'Administrador'
-      );
-      
+      const admin = await usersService.create(adminEmail, adminPassword, "Administrador");
+
       // Actualizar rol y acceso
       await userRepository.update(admin.id, {
         role: UserRole.ADMIN,
-        hasAccess: true
+        hasAccess: true,
       });
 
-      console.log('Usuario admin creado:');
-      console.log('   Email: admin@apuntes-premium.com');
-      console.log('   Password: Admin123!');
-      console.log('   Rol: admin');
+      console.log("Usuario admin creado:");
+      console.log(`   Email: ${adminEmail}`);
+      console.log("   Rol: admin");
     } else {
-      console.log('Usuario admin ya existe');
+      console.log("Usuario admin ya existe");
     }
 
     // Crear usuario regular de prueba
-    const userEmail = 'usuario@test.com';
     let existingUser = await usersService.findByEmail(userEmail);
 
     if (!existingUser) {
-      const user = await usersService.create(
-        userEmail,
-        'User123!',
-        'Usuario Test'
-      );
-      
+      const user = await usersService.create(userEmail, userPassword, "Usuario Test");
+
       // Actualizar acceso
       await usersService.updateAccess(user.id, true);
 
-      console.log('Usuario test creado:');
-      console.log('   Email: usuario@test.com');
-      console.log('   Password: User123!');
-      console.log('   Rol: user');
-      console.log('   Acceso: Si');
+      console.log("Usuario test creado:");
+      console.log(`   Email: ${userEmail}`);
+      console.log("   Rol: user");
+      console.log("   Acceso: Si");
     } else {
-      console.log('Usuario test ya existe');
+      console.log("Usuario test ya existe");
     }
 
     // Crear usuario sin acceso
-    const noAccessEmail = 'sinacceso@test.com';
     let existingNoAccess = await usersService.findByEmail(noAccessEmail);
 
     if (!existingNoAccess) {
-      await usersService.create(
-        noAccessEmail,
-        'NoAccess123!',
-        'Usuario Sin Acceso'
-      );
+      await usersService.create(noAccessEmail, noAccessPassword, "Usuario Sin Acceso");
 
-      console.log('Usuario sin acceso creado:');
-      console.log('   Email: sinacceso@test.com');
-      console.log('   Password: NoAccess123!');
-      console.log('   Rol: user');
-      console.log('   Acceso: No');
+      console.log("Usuario sin acceso creado:");
+      console.log(`   Email: ${noAccessEmail}`);
+      console.log("   Rol: user");
+      console.log("   Acceso: No");
     } else {
-      console.log('Usuario sin acceso ya existe');
+      console.log("Usuario sin acceso ya existe");
     }
 
-    console.log('\nSeed completado!');
-    console.log('\nCredenciales de prueba:');
-    console.log('\nADMIN PANEL (http://localhost:3003):');
-    console.log('   Email: admin@apuntes-premium.com');
-    console.log('   Password: Admin123!');
-    console.log('\nCONTENT APP (http://localhost:3002):');
-    console.log('   Email: usuario@test.com');
-    console.log('   Password: User123!');
-    console.log('\nUsuario sin acceso:');
-    console.log('   Email: sinacceso@test.com');
-    console.log('   Password: NoAccess123!');
+    console.log("\nSeed completado!");
+    console.log("\nUsuarios de prueba:");
+    console.log("\nADMIN PANEL (http://localhost:3003):");
+    console.log(`   Email: ${adminEmail}`);
+    console.log("   Password: configurada por entorno (oculta en logs)");
+    console.log("\nCONTENT APP (http://localhost:3002):");
+    console.log(`   Email: ${userEmail}`);
+    console.log("   Password: configurada por entorno (oculta en logs)");
+    console.log("\nUsuario sin acceso:");
+    console.log(`   Email: ${noAccessEmail}`);
+    console.log("   Password: configurada por entorno (oculta en logs)");
 
     // Crear apuntes de ejemplo
-    console.log('\nCreando apuntes de ejemplo...');
-    
+    console.log("\nCreando apuntes de ejemplo...");
+
     const apuntesExistentes = await apunteRepository.count();
-    
+
     if (apuntesExistentes === 0) {
-      const adminUser = await usersService.findByEmail('admin@apuntes-premium.com');
-      
+      const adminUser = await usersService.findByEmail("admin@apuntes-premium.com");
+
       // Apunte 1: Introducción a TypeScript
       await apunteRepository.save({
-        title: 'Introducción a TypeScript',
-        category: 'TypeScript',
+        title: "Introducción a TypeScript",
+        category: "TypeScript",
         published: true,
         author: adminUser,
         modules: [
           {
-            title: 'Fundamentos de TypeScript',
+            title: "Fundamentos de TypeScript",
             lessons: [
               {
-                title: '¿Qué es TypeScript?',
-                brief: 'Descubre qué es TypeScript y por qué es tan popular',
+                title: "¿Qué es TypeScript?",
+                brief: "Descubre qué es TypeScript y por qué es tan popular",
                 content_md: `# ¿Qué es TypeScript?
 
 TypeScript es un **lenguaje de programación** desarrollado por Microsoft que se construye sobre JavaScript añadiendo tipos estáticos opcionales.
@@ -149,11 +159,11 @@ function saludar(nombre: string): string {
 }
 \`\`\`
 
-En TypeScript, especificamos que \`nombre\` debe ser un string, lo que previene errores.`
+En TypeScript, especificamos que \`nombre\` debe ser un string, lo que previene errores.`,
               },
               {
-                title: 'Tipos básicos',
-                brief: 'Aprende los tipos fundamentales de TypeScript',
+                title: "Tipos básicos",
+                brief: "Aprende los tipos fundamentales de TypeScript",
                 content_md: `# Tipos básicos en TypeScript
 
 TypeScript incluye varios tipos básicos que puedes usar para anotar tus variables.
@@ -208,16 +218,16 @@ if (typeof valor === "number") {
 
 - Evita usar \`any\` cuando sea posible
 - Usa \`unknown\` cuando no conozcas el tipo
-- Los arrays se pueden declarar de dos formas: \`tipo[]\` o \`Array<tipo>\``
-              }
-            ]
+- Los arrays se pueden declarar de dos formas: \`tipo[]\` o \`Array<tipo>\``,
+              },
+            ],
           },
           {
-            title: 'Interfaces y Tipos',
+            title: "Interfaces y Tipos",
             lessons: [
               {
-                title: 'Interfaces',
-                brief: 'Cómo definir estructuras de objetos con interfaces',
+                title: "Interfaces",
+                brief: "Cómo definir estructuras de objetos con interfaces",
                 content_md: `# Interfaces en TypeScript
 
 Las **interfaces** definen la estructura que debe tener un objeto.
@@ -285,26 +295,27 @@ const miPerro: Perro = {
     console.log("¡Guau!");
   }
 };
-\`\`\``
-              }
-            ]
-          }
-        ]
+\`\`\``,
+              },
+            ],
+          },
+        ],
       });
 
       // Apunte 2: React Hooks
       await apunteRepository.save({
-        title: 'React Hooks Esenciales',
-        category: 'React',
+        title: "React Hooks Esenciales",
+        category: "React",
         published: true,
         author: adminUser,
         modules: [
           {
-            title: 'Introducción a Hooks',
+            title: "Introducción a Hooks",
             lessons: [
               {
-                title: '¿Qué son los Hooks?',
-                brief: 'Comprende qué son los Hooks y por qué cambiarán tu forma de programar en React',
+                title: "¿Qué son los Hooks?",
+                brief:
+                  "Comprende qué son los Hooks y por qué cambiarán tu forma de programar en React",
                 content_md: `# React Hooks
 
 Los **Hooks** son funciones que te permiten usar el estado y otras características de React en componentes funcionales.
@@ -354,11 +365,11 @@ function Contador() {
 ## Reglas de los Hooks
 
 - Solo llama Hooks en el nivel superior (no en loops, condiciones o funciones anidadas)
-- Solo llama Hooks desde componentes funcionales o Hooks personalizados`
+- Solo llama Hooks desde componentes funcionales o Hooks personalizados`,
               },
               {
-                title: 'useState',
-                brief: 'Maneja el estado en componentes funcionales',
+                title: "useState",
+                brief: "Maneja el estado en componentes funcionales",
                 content_md: `# useState Hook
 
 \`useState\` es el Hook más básico y te permite añadir estado a componentes funcionales.
@@ -434,16 +445,16 @@ function Perfil() {
 
 - Usa múltiples \`useState\` en lugar de un objeto grande
 - El valor inicial solo se usa en el primer render
-- Puedes pasar una función a \`useState\` para cálculos costosos`
-              }
-            ]
+- Puedes pasar una función a \`useState\` para cálculos costosos`,
+              },
+            ],
           },
           {
-            title: 'Efectos secundarios',
+            title: "Efectos secundarios",
             lessons: [
               {
-                title: 'useEffect',
-                brief: 'Maneja efectos secundarios y ciclo de vida',
+                title: "useEffect",
+                brief: "Maneja efectos secundarios y ciclo de vida",
                 content_md: `# useEffect Hook
 
 \`useEffect\` te permite realizar efectos secundarios en componentes funcionales.
@@ -513,26 +524,26 @@ useEffect(() => {
 
 - Siempre incluye las dependencias correctamente
 - Usa la función de limpieza para evitar memory leaks
-- Para async/await, crea una función interna`
-              }
-            ]
-          }
-        ]
+- Para async/await, crea una función interna`,
+              },
+            ],
+          },
+        ],
       });
 
       // Apunte 3: Node.js y Express
       await apunteRepository.save({
-        title: 'Backend con Node.js y Express',
-        category: 'Backend',
+        title: "Backend con Node.js y Express",
+        category: "Backend",
         published: true,
         author: adminUser,
         modules: [
           {
-            title: 'Primeros pasos',
+            title: "Primeros pasos",
             lessons: [
               {
-                title: 'Introducción a Node.js',
-                brief: 'Aprende qué es Node.js y cómo funciona',
+                title: "Introducción a Node.js",
+                brief: "Aprende qué es Node.js y cómo funciona",
                 content_md: `# Node.js
 
 **Node.js** es un entorno de ejecución de JavaScript construido sobre el motor V8 de Chrome.
@@ -580,11 +591,11 @@ fs.readFile('archivo.txt', 'utf8', (err, data) => {
   if (err) throw err;
   console.log(data);
 });
-\`\`\``
+\`\`\``,
               },
               {
-                title: 'Configurando Express',
-                brief: 'Crea tu primer servidor con Express',
+                title: "Configurando Express",
+                brief: "Crea tu primer servidor con Express",
                 content_md: `# Express.js
 
 **Express** es un framework minimalista para crear aplicaciones web y APIs con Node.js.
@@ -665,20 +676,19 @@ proyecto/
 │   └── middlewares/
 ├── package.json
 └── server.js
-\`\`\``
-              }
-            ]
-          }
-        ]
+\`\`\``,
+              },
+            ],
+          },
+        ],
       });
 
-      console.log('✅ Se crearon 3 apuntes de ejemplo');
+      console.log("✅ Se crearon 3 apuntes de ejemplo");
     } else {
-      console.log('✅ Ya existen apuntes en la base de datos');
+      console.log("✅ Ya existen apuntes en la base de datos");
     }
-
   } catch (error) {
-    console.error('Error en seed:', error);
+    console.error("Error en seed:", error);
   }
 
   await app.close();
