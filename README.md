@@ -1,135 +1,206 @@
-# Turborepo starter
+# Apuntes Premium Monorepo
 
-This Turborepo starter is maintained by the Turborepo core team.
+Monorepo TypeScript para venta, administración y consumo de contenido premium con flujo completo de autenticación y pagos.
 
-## Using this example
+## 🇪🇸 Español
 
-Run the following command:
+### Resumen
 
-```sh
-npx create-turbo@latest
+Este repositorio agrupa cuatro aplicaciones (`landing`, `api`, `content`, `admin`) y paquetes compartidos para operar un producto de contenido técnico con acceso por compra.
+
+### Qué hace hoy
+
+- `apps/landing` (Astro): landing y checkout con integración al backend para crear sesión de Stripe.
+- `apps/api` (NestJS + TypeORM + PostgreSQL): autenticación JWT, usuarios, apuntes, pagos (checkout/webhook), email y generación de apuntes con Gemini.
+- `apps/content` (Astro + React): acceso autenticado y consumo de apuntes publicados.
+- `apps/admin` (Next.js): panel para gestionar apuntes, usuarios, ventas y generación asistida por IA.
+- `packages/*`: utilidades y configuración compartida (TS, ESLint, UI).
+
+### Capturas (App / Web)
+
+![App](apps/admin/public/next.svg)
+![Web](apps/admin/public/vercel.svg)
+
+### Stack técnico (versiones reales)
+
+- Node.js: `>=18` (`package.json` raíz)
+- npm: `10.9.2` (`packageManager`)
+- Turborepo: `2.8.3`
+- TypeScript (root): `5.9.2`
+- Admin: Next.js `16.1.6`, React `19.2.3`, Tailwind CSS `4`
+- API: NestJS `10.x`, TypeORM `0.3.19`, PostgreSQL (`pg` `8.11.3`), Stripe `14.12.0`, Zod `4.3.6`, Gemini SDK `0.24.1`
+- Content/Landing: Astro `4.3.5`, Tailwind CSS `3.4.1`
+
+### Arquitectura (árbol breve)
+
+```text
+apps/
+	admin/    # Panel de administración (Next.js)
+	api/      # Backend (NestJS + TypeORM)
+	content/  # Zona de contenido (Astro + React)
+	landing/  # Landing y checkout (Astro)
+packages/
+	config/ eslint-config/ typescript-config/ ui/ utils/
 ```
 
-## What's inside?
+### Decisiones técnicas
 
-This Turborepo includes the following packages/apps:
+- Monorepo con workspaces de npm + Turborepo para unificar scripts de build/lint/types.
+- Backend modular con NestJS (`auth`, `users`, `apuntes`, `payments`, `email`, `ai`).
+- Persistencia con TypeORM sobre PostgreSQL y entidades por dominio.
+- Stripe Checkout + webhook para registrar compra, otorgar acceso y enviar magic link por email.
+- Validación de contenido generado con esquemas Zod en el servicio de IA.
 
-### Apps and Packages
+### Setup rápido
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+```bash
+npm install
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+Crear variables de entorno desde los ejemplos:
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+```powershell
+Copy-Item apps/api/.env.example apps/api/.env
+Copy-Item apps/content/.env.example apps/content/.env
+Copy-Item apps/landing/.env.example apps/landing/.env
 ```
 
-### Develop
+Ejecutar todo en desarrollo:
 
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
+```bash
+npm run dev
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+Puertos por defecto:
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+- API: `3001`
+- Content: `3002`
+- Admin: `3003`
+- Landing: `4321`
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+Seed de datos de prueba (opcional, API):
 
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+```bash
+npm run seed --workspace apps/api
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+### Validación técnica
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+```bash
+npm run lint
+npm run check-types
+npm run build
 ```
 
-## Useful Links
+### Roadmap corto
 
-Learn more about the power of Turborepo:
+- Añadir y documentar migraciones formales de base de datos.
+- Sustituir `alert()` por sistema consistente de notificaciones.
+- Incorporar capturas reales de `admin`, `content` y `landing`.
+- Añadir guía de deploy por aplicación (variables mínimas y pasos).
 
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+### Enfoque técnico principal
+
+Entrega end-to-end de producto digital: adquisición (landing + checkout), provisión de acceso (webhook + email), administración interna (panel admin) y consumo autenticado de contenido (content app), compartiendo utilidades dentro del monorepo.
+
+---
+
+## 🇺🇸 English Version
+
+### Summary
+
+This repository contains four apps (`landing`, `api`, `content`, `admin`) plus shared packages to run a paid-content product with purchase-based access.
+
+### Current Capabilities
+
+- `apps/landing` (Astro): landing + checkout flow that calls backend checkout session creation.
+- `apps/api` (NestJS + TypeORM + PostgreSQL): JWT auth, users, notes/content, payments (checkout/webhook), email, and Gemini-based content generation.
+- `apps/content` (Astro + React): authenticated area to consume published notes.
+- `apps/admin` (Next.js): admin panel for notes, users, sales, and AI-assisted generation.
+- `packages/*`: shared utilities and configuration (TS, ESLint, UI).
+
+### Screenshots (App / Web)
+
+![App](apps/admin/public/next.svg)
+![Web](apps/admin/public/vercel.svg)
+
+### Tech Stack
+
+- Node.js: `>=18` (root `package.json`)
+- npm: `10.9.2` (`packageManager`)
+- Turborepo: `2.8.3`
+- TypeScript (root): `5.9.2`
+- Admin: Next.js `16.1.6`, React `19.2.3`, Tailwind CSS `4`
+- API: NestJS `10.x`, TypeORM `0.3.19`, PostgreSQL (`pg` `8.11.3`), Stripe `14.12.0`, Zod `4.3.6`, Gemini SDK `0.24.1`
+- Content/Landing: Astro `4.3.5`, Tailwind CSS `3.4.1`
+
+### Architecture (Brief Tree)
+
+```text
+apps/
+	admin/    # Admin panel (Next.js)
+	api/      # Backend (NestJS + TypeORM)
+	content/  # Content area (Astro + React)
+	landing/  # Landing and checkout (Astro)
+packages/
+	config/ eslint-config/ typescript-config/ ui/ utils/
+```
+
+### Technical Decisions
+
+- npm workspaces + Turborepo to standardize build/lint/typecheck workflows.
+- Modular NestJS backend (`auth`, `users`, `apuntes`, `payments`, `email`, `ai`).
+- Domain persistence with TypeORM + PostgreSQL entities.
+- Stripe Checkout + webhook to record purchases, grant access, and send magic-link email.
+- Zod schemas to validate AI-generated structured content.
+
+### Quick Setup
+
+```bash
+npm install
+```
+
+Create env files from examples:
+
+```powershell
+Copy-Item apps/api/.env.example apps/api/.env
+Copy-Item apps/content/.env.example apps/content/.env
+Copy-Item apps/landing/.env.example apps/landing/.env
+```
+
+Run all apps in development:
+
+```bash
+npm run dev
+```
+
+Default ports:
+
+- API: `3001`
+- Content: `3002`
+- Admin: `3003`
+- Landing: `4321`
+
+Optional seed data (API):
+
+```bash
+npm run seed --workspace apps/api
+```
+
+### Technical Validation
+
+```bash
+npm run lint
+npm run check-types
+npm run build
+```
+
+### Short Roadmap
+
+- Add and document formal database migrations.
+- Add real screenshots for `admin`, `content`, and `landing`.
+- Add deploy guide per app (minimum env vars + steps).
+
+### Technical Scope
+
+End-to-end delivery for a digital content product: acquisition (landing + checkout), access provisioning (webhook + email), internal operations (admin panel), and authenticated content consumption (content app), all under one monorepo.

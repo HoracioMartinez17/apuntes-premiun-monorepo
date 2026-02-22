@@ -1,0 +1,126 @@
+---
+---
+
+<section id="pricing" class="py-20 bg-gradient-to-br from-primary via-slate-900 to-primary text-white relative overflow-hidden">
+    <!-- Background accents -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
+         <div class="absolute top-20 right-20 w-96 h-96 bg-secondary opacity-20 rounded-full blur-3xl animate-pulse"></div>
+         <div class="absolute bottom-20 left-20 w-80 h-80 bg-accent opacity-10 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+        <!-- Urgencia temporal -->
+        <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-accent to-yellow-500 text-primary text-sm font-black mb-8 shadow-2xl animate-bounce">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z" clip-rule="evenodd"></path></svg>
+            OFERTA DE LANZAMIENTO: -80% HOY
+        </div>
+
+        <h2 class="text-4xl md:text-6xl font-black mb-6">Invierte en tu futuro <span class="text-accent">ahora</span></h2>
+        <p class="text-xl md:text-2xl text-slate-300 mb-4 max-w-2xl mx-auto font-medium">
+            Todo lo que necesitas para acelerar tu carrera como desarrollador.
+        </p>
+        <p class="text-sm text-slate-400 mb-10">
+            <span class="inline-flex items-center gap-1">
+                <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                17 personas compraron en la última hora
+            </span>
+        </p>
+
+        <div class="relative bg-gradient-to-br from-white to-blue-50 text-primary rounded-3xl p-3 max-w-lg mx-auto shadow-2xl border-4 border-accent">
+            <!-- Badge "Más vendido" -->
+            <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-6 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-black rounded-full shadow-xl">
+                ⚡ MÁS VENDIDO
+            </div>
+            
+            <div class="p-8 md:p-10 border-2 border-slate-100 rounded-2xl bg-white">
+                <div class="text-sm font-black text-secondary uppercase tracking-wider mb-4 flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
+                    Oferta termina pronto
+                </div>
+                
+                <div class="mb-3">
+                    <div class="text-2xl text-slate-400 line-through font-bold">49,99€</div>
+                </div>
+                
+                <div class="flex justify-center items-baseline gap-2 mb-2">
+                    <span class="text-6xl md:text-7xl font-black bg-gradient-to-r from-secondary to-blue-600 bg-clip-text text-transparent">9,99€</span>
+                </div>
+                <div class="text-slate-500 font-bold mb-8">/ pago único • Ahorra 40€</div>
+                
+                <ul class="space-y-4 text-left mb-8 max-w-xs mx-auto">
+                    {[
+                        "Acceso de por vida",
+                        "Nuevos apuntes semanales",
+                        "Sin suscripciones mensuales",
+                        "Soporte prioritario",
+                        "Actualizaciones gratuitas"
+                    ].map((feature) => (
+                        <li class="flex items-center gap-3">
+                            <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span class="font-medium text-slate-700">{feature}</span>
+                        </li>
+                    ))}
+                </ul>
+
+                <button id="checkout-btn" class="w-full py-5 sm:py-4 text-lg sm:text-xl font-black bg-secondary active:bg-blue-600 text-white rounded-xl shadow-lg active:shadow-xl transition-all active:scale-95 touch-manipulation">
+                    Obtener acceso inmediato
+                </button>
+                <p class="text-xs text-slate-400 mt-4">Pago seguro vía Stripe. Satisfacción garantizada.</p>
+                <p id="checkout-error" class="hidden text-sm text-red-600 mt-3 font-medium"></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    const checkoutBtn = document.getElementById('checkout-btn');
+    const checkoutError = document.getElementById('checkout-error');
+    
+    checkoutBtn?.addEventListener('click', async () => {
+        if (checkoutError) {
+            checkoutError.textContent = '';
+            checkoutError.classList.add('hidden');
+        }
+
+        const originalText = checkoutBtn.innerText;
+        checkoutBtn.innerText = "Procesando...";
+        (checkoutBtn as HTMLButtonElement).disabled = true;
+
+        try {
+            // Mocking the call or preparing for real env
+            // In a real scenario, this would potentially fetch from the backend url
+            // const response = await fetch('/api/checkout/create-session', { method: 'POST' });
+            // const data = await response.json();
+            // window.location.href = data.url;
+            
+            // For now, since backend might not be serving this file directly or CORS,
+            // we will simulate the connection or log the intention as requested.
+            // However, the user said "puedes dejar el código preparado".
+            
+            const response = await fetch('/api/checkout/create-session', { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) throw new Error('Error al iniciar checkout');
+
+            const { url } = await response.json();
+            if (url) {
+                window.location.href = url;
+            } else {
+                 throw new Error('No se recibió URL de redirección');
+            }
+
+        } catch (error) {
+            console.error(error);
+            if (checkoutError) {
+                checkoutError.textContent = 'Hubo un error al iniciar el pago. Por favor intenta de nuevo.';
+                checkoutError.classList.remove('hidden');
+            }
+            checkoutBtn.innerText = originalText;
+            (checkoutBtn as HTMLButtonElement).disabled = false;
+        }
+    });
+</script>

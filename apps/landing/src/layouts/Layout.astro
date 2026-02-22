@@ -1,0 +1,102 @@
+---
+interface Props {
+	title: string;
+    description: string;
+}
+
+const { title, description } = Astro.props;
+const canonicalURL = "https://apuntespremium.com"; // Cambiar por tu dominio real
+const ogImage = "/og-image.jpg"; // Asegúrate de crear esta imagen
+---
+
+<!doctype html>
+<html lang="es" class="scroll-smooth">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		
+		<!-- SEO Básico -->
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta name="keywords" content="apuntes de programación, aprender programación rápido, apuntes para programadores, resúmenes de programación, estudiar programación, contenido para desarrolladores, aprender frontend, aprender backend, apuntes profesionales, guía de programación" />
+		<meta name="author" content="Apuntes Premium" />
+		<link rel="canonical" href={canonicalURL} />
+		
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:title" content="Apuntes Premium para Programadores" />
+		<meta property="og:description" content="Aprende programación más rápido con apuntes profesionales, claros y organizados como Notion. Acceso inmediato." />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:site_name" content="Apuntes Premium" />
+		<meta property="og:locale" content="es_ES" />
+		
+		<!-- Twitter -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content="Apuntes Premium para Programadores" />
+		<meta name="twitter:description" content="Contenido claro, práctico y profesional para aprender programación sin perder tiempo." />
+		<meta name="twitter:image" content={ogImage} />
+		
+		<!-- Favicon -->
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		
+		<!-- Generador -->
+		<meta name="generator" content={Astro.generator} />
+		
+        <!-- Google Fonts: Inter -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+		
+		<!-- Schema.org JSON-LD para Producto -->
+		<script type="application/ld+json">
+			{
+			  "@context": "https://schema.org",
+			  "@type": "Product",
+			  "name": "Apuntes Premium para Programadores",
+			  "description": "Apuntes profesionales creados por un programador con años de experiencia. Explicaciones claras, ejemplos reales y contenido organizado como Notion.",
+			  "brand": {
+				"@type": "Brand",
+				"name": "Apuntes Premium"
+			  },
+			  "offers": {
+				"@type": "Offer",
+				"price": "9.99",
+				"priceCurrency": "EUR",
+				"availability": "https://schema.org/InStock",
+				"url": "https://apuntespremium.com"
+			  },
+			  "aggregateRating": {
+				"@type": "AggregateRating",
+				"ratingValue": "4.9",
+				"reviewCount": "1240"
+			  }
+			}
+		</script>
+	</head>
+	<body class="bg-background text-primary font-sans antialiased">
+		<slot />
+	</body>
+</html>
+
+<style is:global>
+	/* Global styles */
+    html {
+        scroll-behavior: smooth;
+        font-size: 16px; /* Base para móvil */
+    }
+    body {
+        margin: 0;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    /* Asegurar que los botones sean táctiles */
+    button, a {
+        -webkit-tap-highlight-color: transparent;
+    }
+    /* Optimizar para touch */
+    * {
+        -webkit-touch-callout: none;
+    }
+</style>

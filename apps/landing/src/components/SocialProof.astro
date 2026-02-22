@@ -1,0 +1,86 @@
+---
+const testimonials = [
+  {
+    quote: "Por fin entiendo conceptos que antes me parecían imposibles. La explicación de Redux me salvó la vida.",
+    author: "Carlos M.",
+    role: "Frontend Developer",
+    avatar: "bg-gradient-to-br from-blue-400 to-blue-600",
+    verified: true,
+    stat: "Aprobó 3 entrevistas técnicas"
+  },
+  {
+    quote: "Los apuntes son mejores que cualquier curso de $200 que he comprado. Van directo al grano.",
+    author: "Sofía R.",
+    role: "Estudiante CS",
+    avatar: "bg-gradient-to-br from-purple-400 to-pink-600",
+    verified: true,
+    stat: "Ahorró 15h/semana"
+  },
+  {
+    quote: "Me ahorran horas cada semana. Ya no busco en Stack Overflow, busco en estos apuntes.",
+    author: "Miguel A.",
+    role: "Fullstack Developer",
+    avatar: "bg-gradient-to-br from-green-400 to-teal-600",
+    verified: true,
+    stat: "Resolvió 50+ problemas"
+  }
+];
+---
+
+<section class="py-16 sm:py-20 bg-white border-t-2 border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12 sm:mb-16">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-yellow-100 to-orange-100 text-orange-700 text-sm sm:text-base font-bold mb-6">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                4.9/5 de valoración media
+            </div>
+            <h2 class="text-4xl md:text-5xl font-black text-primary mb-4">Más de 1,200 estudiantes confían en nosotros</h2>
+            <p class="text-xl text-slate-600">Lee lo que dicen quienes ya están aprendiendo más rápido</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((t) => (
+                <div class="group relative bg-gradient-to-br from-white to-slate-50 p-8 rounded-3xl shadow-lg border-2 border-slate-100 hover:border-secondary hover:shadow-2xl transition-all duration-300">
+                    <div class="absolute -top-3 -right-3 w-12 h-12 bg-gradient-to-br from-accent to-yellow-600 rounded-full flex items-center justify-center text-2xl shadow-xl group-hover:scale-110 transition-transform">
+                        🔥
+                    </div>
+                    
+                    <div class="flex text-yellow-400 mb-5 text-xl">
+                        ★★★★★
+                    </div>
+                    
+                    <p class="text-slate-700 font-medium mb-6 text-lg leading-relaxed">
+                        "{t.quote}"
+                    </p>
+                    
+                    <div class="pt-6 border-t border-slate-200">
+                        <div class="flex items-center gap-4 mb-3">
+                            <div class={`w-14 h-14 ${t.avatar} rounded-full flex items-center justify-center text-white font-black text-xl shadow-lg`}>
+                                {t.author.charAt(0)}
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2">
+                                    <div class="font-black text-primary">{t.author}</div>
+                                    {t.verified && (
+                                        <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                    )}
+                                </div>
+                                <div class="text-sm text-slate-500 font-medium">{t.role}</div>
+                            </div>
+                        </div>
+                        <div class="inline-block px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">
+                            ✓ {t.stat}
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+        
+        <div class="mt-12 text-center">
+            <a href="/checkout" class="inline-flex items-center gap-2 px-8 py-4 bg-secondary text-white font-bold rounded-xl hover:bg-blue-600 transition-colors shadow-lg hover:shadow-xl">
+                Únete a ellos ahora
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+            </a>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,16 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "baseUrl": ".",
+    "skipLibCheck": true,
+    "paths": {
+      "@ui/*": ["../../packages/ui/*"],
+      "@utils/*": ["../../packages/utils/*"],
+      "@config/*": ["../../packages/config/*"],
+      "react": ["./node_modules/@types/react"],
+      "react-dom": ["./node_modules/@types/react-dom"]
+    }
+  }
+}

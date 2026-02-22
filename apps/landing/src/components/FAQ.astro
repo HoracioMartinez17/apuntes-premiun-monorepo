@@ -1,0 +1,38 @@
+---
+const faqs = [
+  {
+    q: "¿Necesito crear una cuenta?",
+    a: "No hace falta. Cuando compras, recibes un enlace directo en tu correo para acceder inmediatamente."
+  },
+  {
+    q: "¿Puedo acceder desde el móvil?",
+    a: "Sí, la plataforma está 100% optimizada para móvil, tablet y escritorio. Estudia donde quieras, cuando quieras."
+  },
+  {
+    q: "¿Cuánto contenido hay?",
+    a: "Más de 100 apuntes cubriendo todo el stack moderno (Frontend, Backend, DevOps, Bases de Datos), y añadimos nuevos temas cada semana."
+  },
+  {
+    q: "¿Qué incluye el acceso?",
+    a: "Acceso ilimitado 24/7 de por vida, todas las actualizaciones futuras gratis, y soporte prioritario."
+  }
+];
+---
+
+<section class="py-20 bg-white">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-bold text-center text-primary mb-12">Preguntas Frecuentes</h2>
+        
+        <div class="space-y-6">
+            {faqs.map((faq) => (
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-100">
+                    <h3 class="text-lg font-bold text-primary mb-2 flex items-center gap-2">
+                        <span class="text-secondary text-xl">?</span>
+                        {faq.q}
+                    </h3>
+                    <p class="text-slate-600 pl-7">{faq.a}</p>
+                </div>
+            ))}
+        </div>
+    </div>
+</section>

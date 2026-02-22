@@ -1,0 +1,91 @@
+---
+const problems = [
+  {
+    icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
+    color: "from-red-500 to-orange-500",
+    title: "Pierdes horas buscando",
+    description: "Te pasas más tiempo buscando explicaciones claras en Google que programando de verdad.",
+    stat: "4.3h diarias perdidas"
+  },
+  {
+    icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>`,
+    color: "from-purple-500 to-pink-500",
+    title: "Vídeos eternos",
+    description: "Cursos de 40 horas donde el profesor divaga y avanza demasiado lento. Te duermes.",
+    stat: "85% de frustración"
+  },
+  {
+    icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>`,
+    color: "from-yellow-500 to-orange-500",
+    title: "Apuntes desordenados",
+    description: "Tus propios apuntes acaban perdidos, mezclados o incompletos. Nunca los encuentras.",
+    stat: "Caos total"
+  },
+  {
+    icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>`,
+    color: "from-blue-500 to-cyan-500",
+    title: "Reinicio constante",
+    description: "Cada vez que vuelves a estudiar un tema, sientes que empiezas desde cero otra vez.",
+    stat: "Círculo vicioso"
+  },
+    {
+    icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>`,
+    color: "from-red-500 to-pink-500",
+    title: "Estancamiento",
+    description: "Te frustras porque sientes que avanzas muy lento y no sabes qué es lo importante.",
+    stat: "Progreso 0%"
+  },
+    {
+    icon: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path></svg>`,
+    color: "from-green-500 to-teal-500",
+    title: "Falta de estructura",
+    description: "Gastas tu energía organizando el conocimiento en lugar de interiorizarlo.",
+    stat: "Tiempo mal usado"
+  }
+];
+---
+
+<section class="py-16 sm:py-20 bg-gradient-to-b from-white to-slate-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+            <div class="inline-block px-4 py-2.5 rounded-full bg-red-100 text-red-600 text-sm sm:text-base font-bold mb-6">
+                ⚠️ Errores comunes que frenan tu progreso
+            </div>
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-primary mb-6 px-4">
+                ¿Te suena familiar esto?
+            </h2>
+            <p class="text-xl text-slate-600 font-medium">
+                El <strong class="text-red-600">87% de estudiantes</strong> abandona no por falta de capacidad, sino por falta de claridad y eficiencia.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+            {problems.map((item) => (
+                <div class="group relative bg-white p-6 sm:p-8 rounded-2xl shadow-lg border-2 border-slate-100 active:border-transparent active:shadow-2xl transition-all overflow-hidden">
+                    <div class={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-10 rounded-full blur-2xl transition-opacity duration-500 -mr-16 -mt-16`}></div>
+                    
+                    <div class={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${item.color} text-white mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                        <Fragment set:html={item.icon} />
+                    </div>
+                    
+                    <div class="inline-block px-3 py-1 rounded-full bg-red-100 text-red-600 text-xs font-bold mb-3">
+                        {item.stat}
+                    </div>
+                    
+                    <h3 class="text-xl font-black text-primary mb-3 group-hover:text-secondary transition-colors">{item.title}</h3>
+                    <p class="text-slate-600 leading-relaxed">
+                        {item.description}
+                    </p>
+                </div>
+            ))}
+        </div>
+        
+        <div class="mt-12 text-center">
+            <p class="text-slate-500 text-sm mb-4">Estos problemas cuestan <strong class="text-primary">+300 horas al año</strong> a cada estudiante</p>
+            <a href="#pricing" class="inline-flex items-center gap-2 text-secondary font-bold hover:gap-3 transition-all">
+                Ver la solución
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+            </a>
+        </div>
+    </div>
+</section>

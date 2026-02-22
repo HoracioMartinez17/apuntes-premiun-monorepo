@@ -1,0 +1,76 @@
+---
+import CourseViewer from '../../components/CourseViewer';
+
+const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:3001';
+const { id } = Astro.params;
+
+// Obtener token de las cookies
+const token = Astro.cookies.get('token')?.value;
+
+if (!token) {
+  return Astro.redirect('/login');
+}
+
+// Fetch del apunte desde la API
+let apunte: any = null;
+let error: string | null = null;
+
+try {
+  const response = await fetch(`${API_URL}/apuntes/${id}`, {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      return Astro.redirect('/login');
+    }
+    throw new Error('No se pudo cargar el apunte');
+  }
+
+  apunte = await response.json();
+
+  // Verificar que el apunte esté publicado
+  if (!apunte.published) {
+    error = 'Este apunte no está disponible';
+  }
+
+  // Verificar que tenga módulos (sea generado por IA)
+  if (!apunte.modules || !Array.isArray(apunte.modules)) {
+    error = 'Este apunte no tiene formato de curso';
+  }
+
+} catch (err) {
+  console.error('Error cargando apunte:', err);
+  error = 'Error al cargar el contenido';
+}
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{apunte?.title || 'Curso'} - Apuntes Premium</title>
+    <meta name="description" content={`Aprende ${apunte?.title}`} />
+  </head>
+  <body>
+    {error ? (
+      <div class="min-h-screen flex items-center justify-center bg-gray-50">
+        <div class="text-center">
+          <h1 class="text-2xl font-bold text-gray-900 mb-4">😕 {error}</h1>
+          <a href="/dashboard" class="text-blue-600 hover:underline">
+            ← Volver al inicio
+          </a>
+        </div>
+      </div>
+    ) : apunte ? (
+      <CourseViewer client:only="react" course={{ title: apunte.title, modules: apunte.modules }} />
+    ) : (
+      <div class="min-h-screen flex items-center justify-center bg-gray-50">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    )}
+  </body>
+</html>

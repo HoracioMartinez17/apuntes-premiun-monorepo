@@ -1,0 +1,118 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Accediendo...">
+  <div class="min-h-screen bg-neutral-950 flex items-center justify-center px-4 relative overflow-hidden">
+    <!-- Background gradient effects -->
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="absolute -top-40 -right-40 w-80 h-80 bg-green-500/20 rounded-full blur-3xl"></div>
+      <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/20 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="max-w-md w-full relative z-10">
+      <div class="bg-neutral-900 border border-neutral-800 rounded-2xl shadow-2xl p-8">
+        <div id="loading" class="text-center">
+          <div class="flex justify-center mb-6">
+            <div class="animate-spin rounded-full h-16 w-16 border-4 border-neutral-800 border-t-blue-500"></div>
+          </div>
+          <h2 class="text-2xl font-bold text-white mb-2">Verificando acceso...</h2>
+          <p class="text-neutral-400">Por favor espera un momento</p>
+        </div>
+
+        <div id="error" class="hidden text-center">
+          <div class="flex justify-center mb-6">
+            <div class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center">
+              <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </div>
+          </div>
+          <h2 class="text-2xl font-bold text-white mb-2">Error de acceso</h2>
+          <p id="error-message" class="text-neutral-400 mb-6"></p>
+          <a 
+            href="/" 
+            class="inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-3 rounded-lg hover:from-red-700 hover:to-red-800 transition-all shadow-lg"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Volver al inicio
+          </a>
+        </div>
+
+        <div id="success" class="hidden text-center">
+          <div class="flex justify-center mb-6">
+            <div class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center animate-pulse">
+              <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+          </div>
+          <h2 class="text-2xl font-bold text-white mb-2">¡Acceso concedido!</h2>
+          <p class="text-neutral-400 mb-4">Serás redirigido al dashboard en un momento...</p>
+          <div class="flex justify-center">
+            <div class="animate-spin rounded-full h-6 w-6 border-2 border-neutral-800 border-t-green-500"></div>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-center text-neutral-500 text-sm mt-6">
+        © {new Date().getFullYear()} Apuntes Premium. Todos los derechos reservados.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:3001';
+    
+    async function processAccessToken() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('token');
+
+      if (!token) {
+        showError('No se proporcionó un token de acceso válido');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/auth/magic-link/${token}`);
+        
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || 'Token inválido o expirado');
+        }
+
+        const data = await response.json();
+        
+        // Guardar el token JWT en localStorage
+        localStorage.setItem('access_token', data.access_token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+
+        // Mostrar éxito
+        document.getElementById('loading')?.classList.add('hidden');
+        document.getElementById('success')?.classList.remove('hidden');
+
+        // Redirigir al dashboard después de 2 segundos
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 2000);
+
+      } catch (error: any) {
+        showError(error.message || 'Ocurrió un error al procesar tu acceso');
+      }
+    }
+
+    function showError(message: string) {
+      document.getElementById('loading')?.classList.add('hidden');
+      document.getElementById('error')?.classList.remove('hidden');
+      const errorMessage = document.getElementById('error-message');
+      if (errorMessage) {
+        errorMessage.textContent = message;
+      }
+    }
+
+    // Ejecutar cuando cargue la página
+    processAccessToken();
+  </script>
+</Layout>
