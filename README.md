@@ -16,10 +16,10 @@ Este repositorio agrupa cuatro aplicaciones (`landing`, `api`, `content`, `admin
 - `apps/admin` (Next.js): panel para gestionar apuntes, usuarios, ventas y generación asistida por IA.
 - `packages/*`: utilidades y configuración compartida (TS, ESLint, UI).
 
-### Capturas (App / Web)
+<!-- ### Capturas (App / Web)
 
 ![App](apps/admin/public/next.svg)
-![Web](apps/admin/public/vercel.svg)
+![Web](apps/admin/public/vercel.svg) -->
 
 ### Stack técnico (versiones reales)
 
@@ -91,13 +91,6 @@ npm run lint
 npm run check-types
 npm run build
 ```
-
-### Roadmap corto
-
-- Añadir y documentar migraciones formales de base de datos.
-- Sustituir `alert()` por sistema consistente de notificaciones.
-- Incorporar capturas reales de `admin`, `content` y `landing`.
-- Añadir guía de deploy por aplicación (variables mínimas y pasos).
 
 ### Enfoque técnico principal
 
@@ -194,13 +187,6 @@ npm run lint
 npm run check-types
 npm run build
 ```
-
-### Short Roadmap
-
-- Add and document formal database migrations.
-- Add real screenshots for `admin`, `content`, and `landing`.
-- Add deploy guide per app (minimum env vars + steps).
-
 ### Technical Scope
 
 End-to-end delivery for a digital content product: acquisition (landing + checkout), access provisioning (webhook + email), internal operations (admin panel), and authenticated content consumption (content app), all under one monorepo.
